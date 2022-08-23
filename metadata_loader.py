@@ -24,14 +24,13 @@ async def load_metadata(puzhash: str) -> Optional[Dict[str, Any]]:
         coin: Optional[Coin] = None
         spent_block_height = 0
         for record in coin_records.values():
-            if record["spent_block_index"] > 0:
+            if record["spent_block_index"] > spent_block_height:
                 coin = Coin(
                     Cast.hexstr_to_bytes32(record["coin"]["parent_coin_info"]),
                     Cast.hexstr_to_bytes32(record["coin"]["puzzle_hash"]),
                     uint64(record["coin"]["amount"]),
                 )
                 spent_block_height = record["spent_block_index"]
-                break
         if coin is None:
             # No valid coin
             return None
